@@ -4,14 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="gioco.css">
+    <!--FONT MODERN ANTIQUA -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Modern+Antiqua&display=swap" rel="stylesheet">
     <script src="gioco.js" defer></script>
 </head>
 <body>
-    <div id="stat"></div>
+    <header id="incipit">
+    <h2>Salve, viandante</h2>
+    <p>I miei poveri vecchi occhi stanchi non riescono vederti, parlami un po' di te.</p>
+    <form id="creazione-personaggio">
+        Chi sei?
+        <input id="nome-giocatore" required type="text">
+        <button type="submit">Avanti</button>
+    </form>
+    
+    <div id="scelta2" hidden>
+    <p>Qual è la tua classe?</p>
+<!-- Aggiungere delle immagini relative a ogni classe-->
+ <!-- Sarebbe carino se riuscissi a usare slide per far scegliere la classe-->
+    <div id="scelta-classe">
+        <button data-classe="guerriero">Guerriero</button>
+        <button data-classe="mago">Mago</button>
+        <button data-classe="chierico">Chierico</button>
+        <button data-classe="bardo">Bardo</button>
+        <button data-classe="ladro">Ladro</button>
+        <button data-classe="barbaro">Barbaro</button>
+    </div>
+    </div>
+    </header>
 
-    <input type="text" name="nuova-task" id="nuova-task">
-    <button id="aggiungi-task">Aggiungi</button>
+<main id="home" hidden>
+    <section id="pagina-quest">
+        <div id="stat-riassunto"></div>
 
-    <div id="lista-task"></div>
+        <input type="text" name="nuova-task" id="nuova-task">
+        <button id="aggiungi-task">Aggiungi</button>
+
+        <div id="lista-task"></div>
+    </section>
+
+    <section id="pagina-statistiche" hidden>
+        <div id="stat-dettaglio"></div>
+    </section>
+
+    <nav id="tab-bar">
+        <button data-pagina="pagina-quest">Quest</button>
+        <button data-pagina="pagina-statistiche">Statistiche</button>
+    </nav>
+</main>
+
 </body>
 </html>
