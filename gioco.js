@@ -11,7 +11,8 @@ const stat = document.querySelector("#stat");
 const tabBar = document.querySelector("#tab-bar");
 const paginaQuest = document.querySelector("#pagina-quest");
 const paginaStatistiche = document.querySelector("#pagina-statistiche");
-
+const inputStatistica = document.querySelector("#statistica-task");
+const banner = document.querySelector("#banner-benvenuto");
 
 
 
@@ -33,7 +34,7 @@ let task = JSON.parse(localStorage.getItem("task")) || [
     { id: 3, nome: "Leggi", fatto: false, xp: 10, xpAssegnato : false, statistica: "saggezza", dataCreazione: "Mon Jan 01 2024" },
     { id: 4, nome: "Suona", fatto: false, xp: 10, xpAssegnato : false, statistica: "carisma", dataCreazione: "Mon Jan 01 2024" },
     { id: 5, nome: "Pratica", fatto: false, xp: 10, xpAssegnato : false, statistica: "destrezza", dataCreazione: "Mon Jan 01 2024" },
-    { id: 6, nome: "Bere", fatto: false, xp: 10, xpAssegnato : false, statistica: "costituzione", dataCreazione: "Mon Jan 01 2024" }
+    { id: 6, nome: "Bevi", fatto: false, xp: 10, xpAssegnato : false, statistica: "costituzione", dataCreazione: "Mon Jan 01 2024" }
 ];
 
 //stat
@@ -64,7 +65,7 @@ if (giocatore.classe !== null) {
 }
 
 const classi = {
-    guerriero: {
+    GUERRIERO: {
         forza: 8,
         saggezza: 3,
         intelletto: 3,
@@ -73,7 +74,7 @@ const classi = {
         costituzione: 7
     },
 
-    mago: {
+    MAGO: {
         forza: 2,
         saggezza: 6,
         intelletto: 9,
@@ -82,7 +83,7 @@ const classi = {
         costituzione: 3
     },
 
-    chierico: {
+    CHIERICO: {
         forza: 4,
         saggezza: 9,
         intelletto: 5,
@@ -91,7 +92,7 @@ const classi = {
         costituzione: 5
     },
 
-    bardo: {
+    BARDO: {
         forza: 3,
         saggezza: 5,
         intelletto: 5,
@@ -100,7 +101,7 @@ const classi = {
         costituzione: 3
     },
 
-    ladro: {
+    LADRO: {
         forza: 4,
         saggezza: 4,
         intelletto: 6,
@@ -109,7 +110,7 @@ const classi = {
         costituzione: 4
     },
 
-    barbaro: {
+    BARBARO: {
         forza: 9,
         saggezza: 3,
         intelletto: 2,
@@ -148,7 +149,7 @@ function controllaReset() {
         giocatore.livello = calcolaLivello(giocatore.xp);
 
         taskDaConsolidare.forEach(elemento => {
-            giocatore.statistiche[elemento.statistica] += elemento.xp;
+            giocatore.statistiche[elemento.statistica] += 1;
         });
 
         task = task.map(elemento => ({
@@ -160,6 +161,18 @@ function controllaReset() {
         localStorage.setItem("ultimoReset", oggi);
         salvaTask();
         salvaGiocatore();
+
+        banner.innerHTML = "<p>Che il vento ti guidi, viandante. L'alba di un nuovo giorno è giunta e nuove quest ti attendono. Non demordere e prosegui per la tua strada.</p>"
+        banner.style.display = "block";
+        banner.classList.add("visible");
+
+        setTimeout (() => {
+            banner.classList.remove("visible");
+
+            setTimeout (() => {
+                banner.style.display = "none";
+            }, 600);
+        }, 9000);
     }
 }
 
@@ -170,13 +183,15 @@ function mostraTask() {
         return;
     }
     const nomiTask = task.map(elemento => {
-        return `<label>
+        return `<div class="task">
+        <label>
         <input type="checkbox" data-id="${elemento.id}"
         ${elemento.fatto ? "checked" : ""}
         ${elemento.fatto ? "disabled" : ""}>
         ${elemento.nome}
         </label>
-        <button data-id="${elemento.id}" class="rimuovi">Elimina</button>`;
+        <button data-id="${elemento.id}" class="rimuovi">X</button>
+        </div>`;
     }).join("");
 
     listaTask.innerHTML = nomiTask;
@@ -222,8 +237,16 @@ listaTask.addEventListener ("click", (evento) => {
     if (!evento.target.classList.contains("rimuovi")) {
         return;
     }
+
 //Cambiare le caselle elimina in icone o rendere il tasto elimina unico che funge per tutti i task
     const idDaRimuovere = Number (evento.target.dataset.id);
+    
+    const taskCliccato = task.find(elemento => elemento.id === idDaRimuovere);
+    const confermato = confirm(`Vuoi davvero rinunciare alla quest "${taskCliccato.nome}"? Perderai l'esperienza di oggi acquisita grazie ad essa.`);
+    if (!confermato) {
+        return;
+    }
+
     task = task.filter (elemento => elemento.id !== idDaRimuovere);
 
     mostraTask();
@@ -245,8 +268,6 @@ sceltaClasse.addEventListener("click", (evento) => {
 
 
 bottoneAggiungi.addEventListener("click", () => {
-    //Reindirizzare nuovotask in una macrocategoria a seconda delle caratteristiche
-     //magari usando un dropdown per caratteristica nella creazione della nuova task
     if (inputTask.value.trim() === "") {
         return;
     }
@@ -263,6 +284,7 @@ bottoneAggiungi.addEventListener("click", () => {
     fatto: false,
     xp: 10,
     xpAssegnato: false,
+    statistica: inputStatistica.value,
     dataCreazione: new Date().toDateString()
 };
 
@@ -281,11 +303,7 @@ tabBar.addEventListener("click", (evento) => {
     paginaQuest.hidden = true;
     paginaStatistiche.hidden = true;
 
-    if (evento.target.dataset.pagina === "pagina-quest") {
-        paginaQuest.hidden = false;
-    } else {
-        paginaStatistiche.hidden = false;
-    }
+   document.querySelector(`#${evento.target.dataset.pagina}`).hidden = false;
 });
 
 //creazione task
@@ -316,7 +334,7 @@ function mostraStatDettaglio() {
         .map(([nome, valore]) => `${nome}: ${valore}`)
         .join(" | ");
 
-    document.querySelector("#stat-dettaglio").innerHTML = `<p>${giocatore.nome} - livello: ${livelloVisualizzato} | Prossimo livello: ${xpNelLivello}/${xpNecessaria(livelloVisualizzato)} XP <br><br> ${listaStatistiche}</p>`;
+    document.querySelector("#stat-dettaglio").innerHTML = `<div id="stat-base"><p>${giocatore.nome} - ${giocatore.classe} livello: ${livelloVisualizzato} | Prossimo livello: ${xpNelLivello}/${xpNecessaria(livelloVisualizzato)} XP</p></div> <br><br><div id="stat-tutte"><p>${listaStatistiche}</p></div>`;
 }
 
 

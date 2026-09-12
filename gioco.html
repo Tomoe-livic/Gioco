@@ -14,7 +14,7 @@
 <body>
     <header id="incipit">
     <h2>Salve, viandante</h2>
-    <p>I miei poveri vecchi occhi stanchi non riescono vederti, parlami un po' di te.</p>
+    <p>I miei poveri vecchi occhi stanchi non riescono a vederti, parlami un po' di te.</p>
     <form id="creazione-personaggio">
         Chi sei?
         <input id="nome-giocatore" required type="text">
@@ -26,12 +26,12 @@
 <!-- Aggiungere delle immagini relative a ogni classe-->
  <!-- Sarebbe carino se riuscissi a usare slide per far scegliere la classe-->
     <div id="scelta-classe">
-        <button data-classe="guerriero">Guerriero</button>
-        <button data-classe="mago">Mago</button>
-        <button data-classe="chierico">Chierico</button>
-        <button data-classe="bardo">Bardo</button>
-        <button data-classe="ladro">Ladro</button>
-        <button data-classe="barbaro">Barbaro</button>
+        <button data-classe="GUERRIERO">Guerriero</button>
+        <button data-classe="MAGO">Mago</button>
+        <button data-classe="CHIERICO">Chierico</button>
+        <button data-classe="BARDO">Bardo</button>
+        <button data-classe="LADRO">Ladro</button>
+        <button data-classe="BARBARO">Barbaro</button>
     </div>
     </div>
     </header>
@@ -39,8 +39,16 @@
 <main id="home" hidden>
     <section id="pagina-quest">
         <div id="stat-riassunto"></div>
-
+        <div id="banner-benvenuto"></div>
         <input type="text" name="nuova-task" id="nuova-task">
+        <select id="statistica-task">
+            <option value="forza">Forza</option>
+            <option value="saggezza">Saggezza</option>
+            <option value="intelletto">Intelletto</option>
+            <option value="carisma">Carisma</option>
+            <option value="destrezza">Destrezza</option>
+            <option value="costituzione">Costituzione</option>
+        </select>
         <button id="aggiungi-task">Aggiungi</button>
 
         <div id="lista-task"></div>
@@ -50,7 +58,12 @@
         <div id="stat-dettaglio"></div>
     </section>
 
+    <section id="pagina-campagna" hidden>
+
+    </section>
+
     <nav id="tab-bar">
+        <button data-pagina="pagina-campagna">Campagna</button>
         <button data-pagina="pagina-quest">Quest</button>
         <button data-pagina="pagina-statistiche">Statistiche</button>
     </nav>

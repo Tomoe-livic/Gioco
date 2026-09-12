@@ -2,6 +2,7 @@ body {
     background-color: #331b53;
     color: #90813f;
     font-family: "Modern Antiqua", serif;
+    font-size: 20px;
 }
 
 button {
@@ -10,6 +11,82 @@ button {
     border-radius: 15%;
     border-color: #770404;
     font-family: "Modern Antiqua", serif;
+    cursor: pointer;
+    font-size: 18px;
 }
 
-/*Peacock blue pagina 195 #0F2CB3*/
+#stat-riassunto {
+    font-size: 28px;
+}
+
+#nuova-task {
+    margin-bottom: 24px;
+    font-size: 17px;
+    font-family: "Modern Antiqua", serif;
+}
+
+.task {
+    display: flex;
+    flex-direction: row;
+    margin: 4px auto;
+}
+
+.rimuovi {
+    font-size: 13px;
+    margin-left: 6px;
+}
+
+#tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+}
+
+#tab-bar button {
+    flex: 1;
+    padding: 10px;
+    font-size: large;
+    border-radius: 0%;
+}
+
+#stat-base {
+    color: #690319;
+    font-weight: bolder;
+    font-size: 28px;
+    background-color: #0b6b74;
+    border-style: solid;
+    border-color: #085157;
+    padding-left: 6px;
+    width: calc(100% + 16px);
+    margin-left: -8px;
+    margin-top: -8px;
+    box-sizing: border-box;
+}
+
+#stat-tutte {
+    color: #90813f;
+    margin-top: 20px;
+}
+
+#banner-benvenuto {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    background-color: #0b6b74;
+    border-style: solid;
+    border-color: #085157;
+    color:#331b53;
+}
+
+#banner-benvenuto.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#statistica-task {
+    margin-bottom: 24px;
+    font-size: 18px;
+    font-family: "Modern Antiqua", serif;
+}
