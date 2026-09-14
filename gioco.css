@@ -32,8 +32,14 @@ button {
 }
 
 .rimuovi {
-    font-size: 13px;
+    font-size: 14px;
     margin-left: 6px;
+    border: none;
+    background-color:#331b53;
+}
+
+.rimuovi:hover {
+    color:#e9d166;
 }
 
 #tab-bar {
@@ -89,4 +95,73 @@ button {
     margin-bottom: 24px;
     font-size: 18px;
     font-family: "Modern Antiqua", serif;
+}
+
+#riga-stat-hp {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+#barre-vitali {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 120px;
+}
+
+#barre-essenza {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: 90px;
+    margin-bottom: -30px;
+}
+
+.gruppo-barra {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.barra-contenitore {
+    position: relative;
+    width: 100%;
+    height: 16px;
+    background-color: #222;
+    border: 2px solid #655200;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+#pagina-statistiche .barra-contenitore {
+    margin-left: 10px;
+}
+
+.valore-barra {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+}
+
+.barra-riempimento {
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+#barra-hp,#barra-health {
+    background-color: #690319;
+}
+
+#barra-mp, #barra-mana {
+    background-color: #085157;
 }

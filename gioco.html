@@ -38,28 +38,69 @@
 
 <main id="home" hidden>
     <section id="pagina-quest">
-        <div id="stat-riassunto"></div>
-        <div id="banner-benvenuto"></div>
-        <input type="text" name="nuova-task" id="nuova-task">
-        <select id="statistica-task">
-            <option value="forza">Forza</option>
-            <option value="saggezza">Saggezza</option>
-            <option value="intelletto">Intelletto</option>
-            <option value="carisma">Carisma</option>
-            <option value="destrezza">Destrezza</option>
-            <option value="costituzione">Costituzione</option>
-        </select>
-        <button id="aggiungi-task">Aggiungi</button>
 
+        <div id="riga-stat-hp">
+            <div id="stat-riassunto"></div>
+        
+            <div id="barre-vitali">
+                <div class="barra-contenitore">
+                   <div id="barra-hp" class="barra-riempimento"></div>
+                </div>
+                <div class="barra-contenitore">
+                    <div id="barra-mp" class="barra-riempimento"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="banner-benvenuto"></div>
+        <div id="creazione-task">
+            <input type="text" name="nuova-task" id="nuova-task">
+
+            <select id="statistica-task">
+                <option value="forza">Forza</option>
+                <option value="saggezza">Saggezza</option>
+                <option value="intelletto">Intelletto</option>
+                <option value="carisma">Carisma</option>
+                <option value="destrezza">Destrezza</option>
+                <option value="costituzione">Costituzione</option>
+            </select>
+
+            <button id="aggiungi-task">Aggiungi</button>
+        </div>
         <div id="lista-task"></div>
     </section>
 
     <section id="pagina-statistiche" hidden>
-        <div id="stat-dettaglio"></div>
+
+        <div id="stat-base"></div>
+
+        <div id="barre-essenza">
+
+            <div class="gruppo-barra">
+                <p>HP: </p>
+                <div class="barra-contenitore">
+                    <div id="barra-health" class="barra-riempimento"></div>
+                    <span id="valore-hp" class="valore-barra"></span>
+                </div>
+            </div>
+
+            <div class="gruppo-barra">
+                <p>MP: </p>
+                <div class="barra-contenitore">
+                    <div id="barra-mana" class="barra-riempimento"></div>
+                    <span id="valore-mp" class="valore-barra"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="stat-tutte"></div>
+
     </section>
 
     <section id="pagina-campagna" hidden>
-
+        <div id="mappa-container"></div>
+        <div id="dialogo-campagna"></div>
     </section>
 
     <nav id="tab-bar">
