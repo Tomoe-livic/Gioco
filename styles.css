@@ -1,18 +1,35 @@
 body {
-    background-color: #331b53;
+    background: linear-gradient(to bottom, #331b53, #1b1e53);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     color: #90813f;
     font-family: "Modern Antiqua", serif;
     font-size: 20px;
+        padding-bottom: 70px;
+}
+
+#nome-giocatore {
+    font-family: "Modern Antiqua", serif;
+    font-size: 17px;
 }
 
 button {
     background-color: #690319;
     color: #967b01;
-    border-radius: 15%;
+    border-radius: 8px;
     border-color: #770404;
     font-family: "Modern Antiqua", serif;
     cursor: pointer;
     font-size: 18px;
+}
+
+button:hover {
+    filter: brightness(1.2);
+}
+
+button:active {
+    transform: scale(0.97);
 }
 
 #stat-riassunto {
@@ -23,6 +40,11 @@ button {
     margin-bottom: 24px;
     font-size: 17px;
     font-family: "Modern Antiqua", serif;
+    cursor: text;
+}
+
+#statistica-task {
+    cursor: pointer;
 }
 
 .task {
@@ -35,7 +57,7 @@ button {
     font-size: 14px;
     margin-left: 6px;
     border: none;
-    background-color:#331b53;
+    background-color:#331b5300;
 }
 
 .rimuovi:hover {
@@ -164,4 +186,53 @@ button {
 
 #barra-mp, #barra-mana {
     background-color: #085157;
+}
+
+#mappa-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#mappa-container button {
+    border-radius: 0%;
+    font-size: 30px;
+    width: 100%;
+    margin-left: 2px;
+}
+
+#mappa-container button:hover {
+    background-color: #450210;
+}
+
+@media (max-width: 600px) {
+
+    body {
+        font-size: 17px;
+        padding: 12px;
+    }
+
+    #stat-riassunto {
+        font-size: 22px;
+    }
+
+    #barre-vitali {
+        width: 100px;
+    }
+
+    #barre-essenza {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin-top: 40px;
+    }
+
+    .gruppo-barra {
+        width: 100%;
+    }
+
+    #tab-bar button {
+        font-size: 16px;
+        padding: 12px 6px;
+    }
 }

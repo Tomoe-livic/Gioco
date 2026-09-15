@@ -134,8 +134,8 @@ const classi = {
 // =====================================================================
 let mappa = {
 
-    taverna: {
-        nome: "Taverna",
+    locanda: {
+        nome: "Locanda",
         npc: true,
     },
 
@@ -170,6 +170,7 @@ let mappa = {
 let sidequest = JSON.parse(localStorage.getItem("sidequest")) || {
     caccia1: {
         nome: "Granchi ovunque!",
+        descrizione: "Ho sentito ultimamente di pescatori che si lamentano dei Granchi Del Cocco che stanno infestando tutta la spiaggia. Se riuscissi anche solo a batterne uno, sono sicuro che li spaventeresti e non creerebbero più alcun problema.",
         tipo: "caccia",
         bersaglio: "granchioGigante",
         stato: "non_iniziata",
@@ -177,14 +178,16 @@ let sidequest = JSON.parse(localStorage.getItem("sidequest")) || {
     },
     caccia2: {
         nome: "Branco feroce",
+        descrizione: "I lupi si stanno avvicinando pericolosamente al villaggio, la gente è terrorizzata. Eliminane almeno uno cosicché potremo sentirci al sicuro.",
         tipo: "caccia",
         bersaglio: "lupo",
         stato: "non_iniziata",
-        xp: 15
+        xp: 30
     },
 
     raccolta1: {
         nome: "Rinfrescami la memoria",
+        descrizione: "Ultimamente la vecchiaia si sta facendo sentire, non ricordo più molto, ad esempio l'altra volta ero... cos'è successo l'altra volta? Comunque, sapresti aiutarmi? Dove c'è l'acqua salata, sopra... sopra la cosa piccola gialla, c'è un alga, se ricordo... ah sì, Alga Ricordo. Portamela per cortesia. Conto su di te Grimilde!",
         tipo: "raccolta",
         bersaglio: "alga-ricordo",
         stato: "non_iniziata",
@@ -198,17 +201,17 @@ let sidequest = JSON.parse(localStorage.getItem("sidequest")) || {
 const mostri = {
     lupo: {
         nome: "Lupo Selvatico",
-        forzaNemico: 8,
+        forzaNemico: 40,
         xp: 3
     },
     granchioGigante: {
         nome: "Granchio Del Cocco",
-        forzaNemico: 6,
+        forzaNemico: 31,
         xp: 2
     },
     lumacaDiMare: {
         nome: "Lumaca Di Mare",
-        forzaNemico: 3,
+        forzaNemico: 20,
         xp: 1
     }
 };
@@ -218,7 +221,7 @@ const mostri = {
 const boss = {
     selas: {
         nome: "Selas - Re Dei lupi",
-        forzaNemico: 60,
+        forzaNemico: 100,
         xp: 60,
         intelletto: - 1,
         forza: 6,
@@ -318,17 +321,7 @@ function controllaReset() {
             return totale + elemento.xp;
         }, 0);
 
-        giocatore.xp += xpDaConsolidare;
-        giocatore.livello = calcolaLivello(giocatore.xp);
-
-        const differenzaHp = calcolaHpMassimi() - giocatore.hpMassimi;
-        const differenzaMp = calcolaMpMassimo() - giocatore.mpMassimo;
-
-        giocatore.hpAttuali += differenzaHp;
-        giocatore.mpAttuale += differenzaMp;
-
-        giocatore.hpMassimi = calcolaHpMassimi();
-        giocatore.mpMassimo = calcolaMpMassimo();
+        aggiornaProgressione();
 
         taskDaConsolidare.forEach(elemento => {
             giocatore.statistiche[elemento.statistica] += 1;
@@ -602,27 +595,44 @@ function gestisciNodo(chiaveNodo, nodo) {
 function avviaCombattimento(chiaveNemico, eBoss) {
     const nemico = eBoss ? boss[chiaveNemico] : mostri [chiaveNemico];
 
-    const potenzaGiocatore = giocatore.statistiche.forza + giocatore.statistiche.intelletto + Math.floor(Math.random() *10);
+    const oggi = new Date().toDateString();
+    const chiaveConteggio = `vittorie_${chiaveNemico}`;
+    const datoSalvato = JSON.parse(localStorage.getItem(chiaveConteggio)) || { data: oggi, conteggio: 0 };
+
+    if (datoSalvato.data !== oggi) {
+        datoSalvato.data = oggi;
+        datoSalvato.conteggio = 0;
+    }
+
+    const limiteGiornaliero = 5;
+    if (datoSalvato.conteggio >= limiteGiornaliero) {
+        dialogoCampagna.innerHTML = `<p>${nemico.nome} non si vede all'orizzonte. Riposati e torna domani per vedere se i mostri sono tornati.</p>`;
+        return;
+    }
+
+    const potenzaGiocatore = potenzaTotaleGiocatore();
     const potenzaNemico = nemico.forzaNemico + Math.floor(Math.random() * 10);
 
     if (potenzaGiocatore >= potenzaNemico) {
         giocatore.xp += nemico.xp;
+        aggiornaProgressione();
 
         if (eBoss) {
-            giocatore.statistiche.forza = nemico.forza;
-            giocatore.statistiche.saggezza = nemico.saggezza;
-            giocatore.statistiche.intelletto = nemico.intelletto;
-            giocatore.statistiche.carisma = nemico.carisma;
-            giocatore.statistiche.destrezza = nemico.destrezza;
-            giocatore.statistiche.costituzione = nemico.costituzione;
+            for (const statistica in giocatore.statistiche) {
+                if (nemico[statistica] !== undefined) {
+                    giocatore.statistiche[statistica] += nemico[statistica];
+                }
+            }
         }
 
-        giocatore.livello = calcolaLivello(giocatore.xp);
+        datoSalvato.conteggio += 1;
+        localStorage.setItem(chiaveConteggio, JSON.stringify(datoSalvato));
+
         salvaGiocatore();
 
         dialogoCampagna.innerHTML = `<p>Congratulazione, hai appena sconfitto ${nemico.nome}! Guadagni ${nemico.xp} XP.</p>`;
        
-        /*aggiornaSidequestCaccia(chiaveNemico);*/
+        aggiornaSidequestPerUccisione(chiaveNemico);
     } else {
         dialogoCampagna.innerHTML = `<p>${nemico.nome} ti ha sconfitto. Completare quest ti rende più forte, ritenta non appena te la sentirai</p>`
     }
@@ -658,8 +668,21 @@ function mostraDialogoNpc() {
 dialogoCampagna.addEventListener("click", (evento) => {
     if (evento.target.classList.contains("accetta-quest")) {
         const chiaveQuest = evento.target.dataset.quest;
-        sidequest[chiaveQuest].stato = "attiva";
+        const q = sidequest[chiaveQuest];
+
+        const decisione = confirm(`${q.descrizione}\n\nAccetti questo incarico?`);
+        if (!decisione) {
+            return;
+        }
+
+        q.stato = "attiva";
         salvaSidequest();
+
+        dialogoCampagna.innerHTML = `<p>Hai accettato: "${q.nome}". Torna da me quando avrai completato l'incarico.</p>`;
+    
+        setTimeout(() => {
+            mostraDialogoNpc();
+        }, 3000);
     }
 
     if (evento.target.classList.contains ("chiudi-quest")) {
@@ -673,8 +696,12 @@ dialogoCampagna.addEventListener("click", (evento) => {
         q.stato = "conclusa";
         salvaSidequest();
 
-        dialogoCampagna.innerHTML = `<p>Sidequest completata! Hai guadagnato ${q.xp} XP.</p>`;
+        dialogoCampagna.innerHTML = `<p>Sidequest "${q.nome}" completata! Hai guadagnato ${q.xp} XP.</p>`;
         mostraStatRiassunto();
+
+        setTimeout(() => {
+            mostraDialogoNpc();
+        }, 3000);
     }
 
     if (evento.target.classList.contains("raccogli")) {
@@ -701,7 +728,12 @@ function mostraEsplorazione(nodo) {
     let html = `<p>Esplori ${nodo.nome}.</p>`;
 
     if (nodo.oggetto) {
-        html += `<button class="raccogli" data-oggetto="${nodo.oggetto}">Raccogli ${nodo.oggetto}</button>`;
+        const questCollegata = Object.values(sidequest).find(q => q.bersaglio === nodo.oggetto);
+        const questAttiva = questCollegata && questCollegata.stato === "attiva";
+
+        if (questAttiva) {
+            html += `<button class="raccogli" data-oggetto="${nodo.oggetto}">Raccogli ${nodo.oggetto}</button>`;
+        }
     }
 
     nodo.mostri.forEach(chiaveMostro => {
@@ -750,15 +782,44 @@ function calcolaLivello(xpTotale) {
 }
 
 function calcolaHpMassimi() {
-        const base = classi[giocatore.classe].hpMassimi;
-        return base + (giocatore.livello - 1) * 5;
-        }
+    const base = classi[giocatore.classe].hpMassimi;
+    return base + (giocatore.livello - 1) * 5;
+    }
 
-        function calcolaMpMassimo() {
-        const base = classi[giocatore.classe].mpMassimo;
-        return base + (giocatore.livello - 1) * 3;
-        }
+    function calcolaMpMassimo() {
+    const base = classi[giocatore.classe].mpMassimo;
+    return base + (giocatore.livello - 1) * 3;
+    }
 
+function aggiornaProgressione() {
+    giocatore.livello = calcolaLivello(giocatore.xp);
+
+    const differenzaHp = calcolaHpMassimi() - giocatore.hpMassimi;
+    const differenzaMp = calcolaMpMassimo() - giocatore.mpMassimo;
+
+    giocatore.hpAttuali += differenzaHp;
+    giocatore.mpAttuale += differenzaMp;
+
+    giocatore.hpMassimi = calcolaHpMassimi();
+    giocatore.mpMassimo = calcolaMpMassimo();
+}
+
+function potenzaTotaleGiocatore() {
+    const sommaStatistiche = Object.values(giocatore.statistiche).reduce((totale, valore) => {
+        return totale + valore;
+    }, 0);
+
+    return sommaStatistiche + Math.floor(Math.random() * 10);
+}
+
+function aggiornaSidequestPerUccisione(chiaveNemico) {
+    Object.values(sidequest).forEach(q => {
+        if (q.tipo === "caccia" && q.bersaglio === chiaveNemico && q.stato === "attiva") {
+            q.stato = "completabile";
+        }
+    });
+    salvaSidequest();
+}
 // =====================================================================
 // AVVIO
 // =====================================================================
